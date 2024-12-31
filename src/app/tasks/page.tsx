@@ -15,6 +15,7 @@ type Task = {
 
 export default function Tasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [formVisible, setFormVisible] = useState(false); // State to manage popup visibility
   const [form, setForm] = useState({
     task_name: "",
     task_description: "",
@@ -58,6 +59,7 @@ export default function Tasks() {
           water_intake: "",
           task_points: "",
         });
+        setFormVisible(false); // Hide the popup after submitting
       } else {
         console.error("Failed to create task");
       }
@@ -71,12 +73,10 @@ export default function Tasks() {
     setForm({ ...form, [name]: value });
   };
 
-  // Function to parse time strings into Date objects for sorting
   const parseTime = (time: string) => {
-    return parse(time, "h:mm a", new Date()); // Parses time like "7:10 AM"
+    return parse(time, "h:mm a", new Date());
   };
 
-  // Sort tasks by start_time
   const sortedTasks = [...tasks].sort((a, b) => {
     return (
       parseTime(a.start_time).getTime() - parseTime(b.start_time).getTime()
@@ -84,90 +84,121 @@ export default function Tasks() {
   });
 
   return (
-    <div>
-      <h1>Tasks</h1>
-      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-        <input
-          type="text"
-          name="task_name"
-          value={form.task_name}
-          onChange={handleChange}
-          placeholder="Task Name"
-          required
-        />
-        <input
-          type="text"
-          name="task_description"
-          value={form.task_description}
-          onChange={handleChange}
-          placeholder="Task Description"
-          required
-        />
-        <input
-          type="text"
-          name="start_time"
-          value={form.start_time}
-          onChange={handleChange}
-          placeholder="Start Time (e.g., 7:10 AM)"
-          required
-        />
-        <input
-          type="text"
-          name="end_time"
-          value={form.end_time}
-          onChange={handleChange}
-          placeholder="End Time (e.g., 7:30 AM)"
-          required
-        />
-        <input
-          type="number"
-          name="water_intake"
-          value={form.water_intake}
-          onChange={handleChange}
-          placeholder="Water Intake (glasses)"
-          required
-        />
-        <input
-          type="number"
-          name="task_points"
-          value={form.task_points}
-          onChange={handleChange}
-          placeholder="Task Points"
-          required
-        />
-        <button type="submit">Create Task</button>
-      </form>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Tasks</h1>
+      <button
+        onClick={() => setFormVisible(true)}
+        className="bg-green-500 text-white px-4 py-2 rounded"
+      >
+        Create Task
+      </button>
 
-      {sortedTasks.length === 0 ? (
-        <p>Loading tasks...</p>
-      ) : (
-        sortedTasks.map((task) => (
-          <div
-            key={task.id}
-            style={{
-              border: "1px solid #ddd",
-              margin: "10px",
-              padding: "10px",
-              borderRadius: "5px",
-            }}
-          >
-            <h2>{task.task_name}</h2>
-            <p>{task.task_description}</p>
-            <p>
-              <strong>Start Time:</strong> {task.start_time}
-            </p>
-            <p>
-              <strong>End Time:</strong> {task.end_time}
-            </p>
-            <p>
-              <strong>Water Intake:</strong> {task.water_intake} glass
-            </p>
-            <p>
-              <strong>Points:</strong> {task.task_points}
-            </p>
+      {formVisible && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Create New Task</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <input
+                type="text"
+                name="task_name"
+                value={form.task_name}
+                onChange={handleChange}
+                placeholder="Task Name"
+                required
+                className="w-full px-4 py-2 border rounded"
+              />
+              <input
+                type="text"
+                name="task_description"
+                value={form.task_description}
+                onChange={handleChange}
+                placeholder="Task Description"
+                required
+                className="w-full px-4 py-2 border rounded"
+              />
+              <input
+                type="text"
+                name="start_time"
+                value={form.start_time}
+                onChange={handleChange}
+                placeholder="Start Time (e.g., 7:10 AM)"
+                required
+                className="w-full px-4 py-2 border rounded"
+              />
+              <input
+                type="text"
+                name="end_time"
+                value={form.end_time}
+                onChange={handleChange}
+                placeholder="End Time (e.g., 7:30 AM)"
+                required
+                className="w-full px-4 py-2 border rounded"
+              />
+              <input
+                type="number"
+                name="water_intake"
+                value={form.water_intake}
+                onChange={handleChange}
+                placeholder="Water Intake (glasses)"
+                required
+                className="w-full px-4 py-2 border rounded"
+              />
+              <input
+                type="number"
+                name="task_points"
+                value={form.task_points}
+                onChange={handleChange}
+                placeholder="Task Points"
+                required
+                className="w-full px-4 py-2 border rounded"
+              />
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setFormVisible(false)}
+                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-500 text-white px-4 py-2 rounded"
+                >
+                  Save Task
+                </button>
+              </div>
+            </form>
           </div>
-        ))
+        </div>
       )}
+
+      <div className="mt-6">
+        {sortedTasks.length === 0 ? (
+          <p>Loading tasks...</p>
+        ) : (
+          sortedTasks.map((task) => (
+            <div
+              key={task.id}
+              className="border border-gray-300 p-4 rounded mb-4"
+            >
+              <h2 className="text-lg font-bold">{task.task_name}</h2>
+              <p>{task.task_description}</p>
+              <p>
+                <strong>Start Time:</strong> {task.start_time}
+              </p>
+              <p>
+                <strong>End Time:</strong> {task.end_time}
+              </p>
+              <p>
+                <strong>Water Intake:</strong> {task.water_intake} glass
+              </p>
+              <p>
+                <strong>Points:</strong> {task.task_points}
+              </p>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
