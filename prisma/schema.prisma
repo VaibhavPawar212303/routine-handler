@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model task {
+  id               String @id @default(uuid())
+  task_name        String
+  task_description String
+  start_time       String
+  end_time         String
+  water_intake     Int
+  task_points      Int
+}
