@@ -7,6 +7,7 @@ export async function GET() {
     const tasks = await prisma.task.findMany();
     return new Response(JSON.stringify(tasks), { status: 200 });
   } catch (error) {
+    console.error("Error fetching tasks:", error); // Use the error here
     return new Response(JSON.stringify({ error: "Failed to fetch tasks" }), {
       status: 500,
     });
@@ -19,11 +20,9 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log(body);
 
-    // Parse `water_intake` and `task_points` as integers
     const waterIntake = parseInt(body.water_intake, 10);
     const taskPoints = parseInt(body.task_points, 10);
 
-    // Validate the parsed values
     if (isNaN(waterIntake) || isNaN(taskPoints)) {
       return new Response(
         JSON.stringify({ error: "Invalid water_intake or task_points value" }),
@@ -44,7 +43,7 @@ export async function POST(request: Request) {
 
     return new Response(JSON.stringify(newTask), { status: 201 });
   } catch (error) {
-    console.error("Error creating task:", error);
+    console.error("Error creating task:", error); // Use the error here
     return new Response(JSON.stringify({ error: "Failed to create task" }), {
       status: 500,
     });

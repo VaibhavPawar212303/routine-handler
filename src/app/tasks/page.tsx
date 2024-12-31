@@ -2,8 +2,18 @@
 
 import React, { useEffect, useState } from "react";
 
+type Task = {
+  id: number;
+  task_name: string;
+  task_description: string;
+  start_time: string;
+  end_time: string;
+  water_intake: number;
+  task_points: number;
+};
+
 export default function Tasks() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [form, setForm] = useState({
     task_name: "",
     task_description: "",
@@ -13,7 +23,6 @@ export default function Tasks() {
     task_points: "",
   });
 
-  // Fetch tasks
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -28,10 +37,7 @@ export default function Tasks() {
     fetchTasks();
   }, []);
 
-  // Handle form submission
-  // @ts-ignore
-  const handleSubmit = async (e) => {
-    console.log(form);
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await fetch("/api/tasks", {
@@ -41,9 +47,8 @@ export default function Tasks() {
       });
 
       if (response.ok) {
-        const newTask = await response.json();
-        // @ts-ignore
-        setTasks((prevTasks) => [...prevTasks, newTask]); // Add new task to the list
+        const newTask: Task = await response.json();
+        setTasks((prevTasks) => [...prevTasks, newTask]);
         setForm({
           task_name: "",
           task_description: "",
@@ -60,9 +65,7 @@ export default function Tasks() {
     }
   };
 
-  // Handle form input change
-  // @ts-ignore
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
@@ -127,10 +130,7 @@ export default function Tasks() {
       ) : (
         tasks.map((task) => (
           <div
-            key={
-              // @ts-ignore
-              task.id
-            }
+            key={task.id}
             style={{
               border: "1px solid #ddd",
               margin: "10px",
@@ -138,46 +138,19 @@ export default function Tasks() {
               borderRadius: "5px",
             }}
           >
-            <h2>
-              {
-                // @ts-ignore
-                task.task_name
-              }
-            </h2>
+            <h2>{task.task_name}</h2>
+            <p>{task.task_description}</p>
             <p>
-              {
-                // @ts-ignore
-                task.task_description
-              }
+              <strong>Start Time:</strong> {task.start_time}
             </p>
             <p>
-              <strong>Start Time:</strong>{" "}
-              {
-                // @ts-ignore
-                task.start_time
-              }
+              <strong>End Time:</strong> {task.end_time}
             </p>
             <p>
-              <strong>End Time:</strong>{" "}
-              {
-                // @ts-ignore
-                task.end_time
-              }
+              <strong>Water Intake:</strong> {task.water_intake} glass
             </p>
             <p>
-              <strong>Water Intake:</strong>{" "}
-              {
-                // @ts-ignore
-                task.water_intake
-              }{" "}
-              glass
-            </p>
-            <p>
-              <strong>Points:</strong>{" "}
-              {
-                // @ts-ignore
-                task.task_points
-              }
+              <strong>Points:</strong> {task.task_points}
             </p>
           </div>
         ))
