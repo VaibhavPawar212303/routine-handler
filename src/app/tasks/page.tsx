@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { parse } from "date-fns";
 
 type Task = {
   id: number;
@@ -70,6 +71,18 @@ export default function Tasks() {
     setForm({ ...form, [name]: value });
   };
 
+  // Function to parse time strings into Date objects for sorting
+  const parseTime = (time: string) => {
+    return parse(time, "h:mm a", new Date()); // Parses time like "7:10 AM"
+  };
+
+  // Sort tasks by start_time
+  const sortedTasks = [...tasks].sort((a, b) => {
+    return (
+      parseTime(a.start_time).getTime() - parseTime(b.start_time).getTime()
+    );
+  });
+
   return (
     <div>
       <h1>Tasks</h1>
@@ -95,7 +108,7 @@ export default function Tasks() {
           name="start_time"
           value={form.start_time}
           onChange={handleChange}
-          placeholder="Start Time"
+          placeholder="Start Time (e.g., 7:10 AM)"
           required
         />
         <input
@@ -103,7 +116,7 @@ export default function Tasks() {
           name="end_time"
           value={form.end_time}
           onChange={handleChange}
-          placeholder="End Time"
+          placeholder="End Time (e.g., 7:30 AM)"
           required
         />
         <input
@@ -125,10 +138,10 @@ export default function Tasks() {
         <button type="submit">Create Task</button>
       </form>
 
-      {tasks.length === 0 ? (
+      {sortedTasks.length === 0 ? (
         <p>Loading tasks...</p>
       ) : (
-        tasks.map((task) => (
+        sortedTasks.map((task) => (
           <div
             key={task.id}
             style={{
