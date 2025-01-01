@@ -7,13 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model task {
-  id               String @id @default(uuid())
+  id               String   @id @default(uuid())
   task_name        String
   task_description String
+  created_Date     DateTime @default(now())
   start_time       String
   end_time         String
   water_intake     Int
   task_points      Int
+  created_by       String
+  status           String
 }

@@ -1,22 +1,21 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-// Handle GET requests
-export async function GET() {
+// Handle PATCH (Update) requests
+export async function PUT(
+  request: Request,
+  //@ts-ignore
+  context: RouteContext<{ params: { id: string } }> // Ensure this matches your route configuration
+) {
   try {
-    const tasks = await prisma.task.findMany();
-    return new Response(JSON.stringify(tasks), { status: 200 });
-  } catch (error) {
-    console.error("Error fetching tasks:", error);
-    return new Response(JSON.stringify({ error: "Failed to fetch tasks" }), {
-      status: 500,
-    });
-  }
-}
+    const { id } = context.params; // Destructure `id` directly
+    console.log(id);
+    if (!id) {
+      return new Response(JSON.stringify({ error: "Task ID is missing" }), {
+        status: 400,
+      });
+    }
 
-// Handle POST requests
-export async function POST(request: Request) {
-  try {
     const body = await request.json();
     if (!body) {
       return new Response(
@@ -24,6 +23,7 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
     const {
       task_name,
       task_description,
@@ -32,7 +32,9 @@ export async function POST(request: Request) {
       water_intake,
       task_points,
       created_by,
+      status,
     } = body;
+
     if (
       !task_name ||
       !task_description ||
@@ -45,8 +47,10 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
     const waterIntake = parseInt(water_intake, 10);
     const taskPoints = parseInt(task_points, 10);
+
     if (
       isNaN(waterIntake) ||
       isNaN(taskPoints) ||
@@ -60,7 +64,9 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    const newTask = await prisma.task.create({
+
+    const updatedTask = await prisma.task.update({
+      where: { id }, // The ID is a string (adjust if needed for your DB schema)
       data: {
         task_name,
         task_description,
@@ -69,19 +75,15 @@ export async function POST(request: Request) {
         water_intake: waterIntake,
         task_points: taskPoints,
         created_by,
-        status: "Not Completed",
+        status: status || "Not Completed",
       },
     });
-    return new Response(JSON.stringify(newTask), { status: 201 });
+
+    return new Response(JSON.stringify(updatedTask), { status: 200 });
   } catch (error) {
-    console.error("Error creating task:", error);
-    return new Response(JSON.stringify({ error: "Failed to create task" }), {
+    console.error("Error updating task:", error);
+    return new Response(JSON.stringify({ error: "Failed to update task" }), {
       status: 500,
     });
   }
 }
-
-
-
-
-
