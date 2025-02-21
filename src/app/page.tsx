@@ -2,7 +2,7 @@
  
 export default function Home() {
   return (
-    <div className="bg-[#121212] text-white min-h-screen flex flex-col justify-center items-center px-4 py-16">
+    <div className="bg-[#121212] text-white min-h-screen flex flex-col justify-center items-center px-4 py-16 mt-10">
       {/* Hero Section */}
       <div className="text-center">
         <h1 className="text-5xl font-extrabold text-[#61AFEF] mb-4">
