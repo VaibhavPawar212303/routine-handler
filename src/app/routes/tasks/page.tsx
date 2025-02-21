@@ -142,14 +142,14 @@ export default function Tasks() {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold">Tasks</h2>
+        <h2 className="text-xl font-bold text-black">Tasks</h2>
         <button
           onClick={() => {
             setFormVisible(true);
             setIsEditing(false);
             setEditTaskId(null);
           }}
-          className="bg-green-500 text-white px-4 py-2 rounded"
+          className="bg-green-500 text-white px-4 py-2 rounded text-black"
         >
           Create Task
         </button>
@@ -180,7 +180,7 @@ export default function Tasks() {
 
       {formVisible && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96 ">
             <h2 className="text-xl font-bold mb-4">
               {isEditing ? "Edit Task" : "Create New Task"}
             </h2>
@@ -280,7 +280,7 @@ export default function Tasks() {
         </div>
       )}
 
-      <div className="mt-4">
+      <div className="mt-4 text-black">
         {sortedTasks.length > 0 ? (
           <ul className="space-y-4">
             {sortedTasks.map((task) => (
@@ -300,7 +300,7 @@ export default function Tasks() {
                 <p>
                   <strong>Status:</strong> {task.status}
                 </p>
-                <h3 className="text-lg font-semibold">{task.task_name}</h3>
+                <h3 className="text-lg font-semibold text-black">{task.task_name}</h3>
                 <p>{task.task_description}</p>
                 <p>
                   <strong>Time:</strong> {task.start_time} - {task.end_time}
